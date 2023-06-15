@@ -2,6 +2,7 @@ import os
 from airflow.decorators import dag, task
 import pendulum
 import pandas as pd
+from sqlalchemy import create_engine
 
 @dag(
     dag_id="load_velib",
@@ -30,6 +31,20 @@ def load_velib():
 
         return df.shape
     
+    @task()
+    def upload_data(dataframe):
+        user = "airflow"
+        password = "airflow"
+        host = "localhost" 
+        port = "5432" 
+        db = "airflow"
+        table_name = "velib_station"
+        engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{db}')
+
+        df.head(n=0).to_sql(name=table_name, con=engine, if_exists='replace')
+
+        df.to_sql(name=table_name, con=engine, if_exists='append')
+        
     df_shape = get_number_lines(get_data())
 
 
