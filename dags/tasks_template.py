@@ -13,25 +13,48 @@ from io import StringIO
 #     )
     
 def get_data():
-    url="https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/velib-disponibilite-en-temps-reel/exports/csv?lang=fr"
-    
-    response = requests.get(url)
-    data = response.text
+    url_core="https://velib-metropole-opendata.smoove.pro/opendata/Velib_Metropole/station_status.json"
+    response_core = requests.get(url_core)
+    dict_core = response_core.json()
 
-    return data
-    
+    url_info="https://velib-metropole-opendata.smoove.pro/opendata/Velib_Metropole/station_information.json"
+    response_info = requests.get(url_info)
+    dict_info = response_info.json()
+
+    return dict_core, dict_info 
+
+def transform_dataframe(dict_core, dict_info):
+    stations_json = dict_core['data']['stations']
+    dataframe_with_station_data = pd.json_normalize(stations_json)
+
+    stations_informations_json = dict_info['data']['stations']
+    dataframe_with_station_informations = pd.json_normalize(stations_informations_json)
+
+    dataframe = pd.merge(dataframe_with_station_data, dataframe_with_station_informations, on=["station_id","stationCode"])
+
+    dataframe.drop(columns=["num_bikes_available","num_bikes_available_types","num_docks_available","rental_methods"],inplace=True)
+
+    return dataframe
+
 def upload_data():
-    data = get_data()
-    df = pd.read_csv(StringIO(data), sep=";")
+
+    #login informations
     user = "airflow"
     password = "airflow"
     host = "postgres" 
     port = "5432" 
     db = "velib"
     table_name = "velib_station"
+
+    dict_c, dict_i = get_data()
+
+    dataframe = transform_dataframe(dict_c, dict_i)
+
     engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{db}')
 
-    df.head(n=0).to_sql(name=table_name, con=engine, if_exists='replace')
+    #df = transform_dataframe(dataframe)
+    
+    dataframe.head(n=0).to_sql(name=table_name, con=engine, if_exists='replace')
 
-    df.to_sql(name=table_name, con=engine, if_exists='append')
+    dataframe.to_sql(name=table_name, con=engine, if_exists='append')
     return True    
