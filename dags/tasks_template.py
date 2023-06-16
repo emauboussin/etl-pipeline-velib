@@ -57,4 +57,5 @@ def upload_data():
     dataframe.head(n=0).to_sql(name=table_name, con=engine, if_exists='replace')
 
     dataframe.to_sql(name=table_name, con=engine, if_exists='append')
+    
     return True    
