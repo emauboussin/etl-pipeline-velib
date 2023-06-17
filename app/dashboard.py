@@ -25,13 +25,15 @@ for elt in cursor.description:
     cols.append(elt[0])
 df = pd.DataFrame(data=data,columns=cols)
 
-df["last_reported"] = pd.to_datetime(df['last_reported'],unit='s')
+df["last_reported"] = pd.to_datetime(df['last_reported'],unit='s',utc=True)
+
+df["last_reported"] = df["last_reported"].dt.tz_convert("Europe/Paris")
 
 last_update = df["last_reported"].max().strftime("%H:%M %d/%m/%Y")
 
 velib_not_parked = np.sum(df["capacity"]-df["numDocksAvailable"])
 
-#print("Connection established to: ",data)
+
 
 #Closing the connection
 conn.close()
@@ -39,12 +41,9 @@ conn.close()
 app = Dash(__name__,external_stylesheets=[dbc.themes.LUX])
 
 fig = px.scatter_mapbox(df, lat="lat", lon="lon", color="numBikesAvailable",size="capacity",
-                  color_continuous_scale=px.colors.cyclical.IceFire, size_max=15, zoom=10)
+                  color_continuous_scale="haline", size_max=15, zoom=10,hover_name="name",custom_data=["name","capacity","numBikesAvailable"])
 fig.update_layout(mapbox_style="open-street-map")
-# colors = {
-#     'background': '#111111',
-#     'text': '#7FDBFF'
-# }
+
 
 app.layout = html.Div(children=[
     html.H1(children='Velib station map',
@@ -74,24 +73,9 @@ app.layout = html.Div(children=[
             'font_family': 'cursive',
             'textAlign': 'center'
         }),
-    dcc.Graph(figure=fig,style={"height": "1000px", "width": "100%"} )
+    dcc.Graph(figure=fig,style={"height": "800px", "width": "100%"} )
 ])
 
-
-#  dcc.Graph(
-#         id='example-graph',
-#         figure=fig
-#     )
-# @app.callback(
-#     Output('my-output',component_property='children'),
-#     Input('refresh-button')
-# )
-
-def update_table():
-    ingestion_flow()
-    now = datetime.now()
-    current_time = now.strftime("%H:%M")
-    return current_time
 
 if __name__ == "__main__":
     app.run_server(host='0.0.0.0', port=8050, debug=True)
