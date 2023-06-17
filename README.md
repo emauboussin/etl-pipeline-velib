@@ -23,7 +23,14 @@ The UI is accessible with : [0.0.0.0:8050](0.0.0.0:8050)
 And you can change the parameters of the DAGs directly through the airflow dashboard : [0.0.0.0:8080](0.0.0.0:8080)
 
 
+## Coming soon
 
+It's not possible yet to save the data, so it's not possible to conduct analysis through time of the availability of bikes station.
+
+Functionnalities to add : 
+
+1) Show the last update time for each station on the map.
+2) Save all uploads of data to view the evolution of the map through time.
 
 
 
