@@ -18,8 +18,8 @@ docker-compose up
 
 You will need a docker engine to launch it.
 
-The UI is accessible with : [](0.0.0.0:8050).
-And you can change the parameters of the DAGs directly through the airflow dashboard : [](0.0.0.0:8080).
+The UI is accessible with : [](0.0.0.0:8050) 
+And you can change the parameters of the DAGs directly through the airflow dashboard : [](0.0.0.0:8080)
 
 
 
