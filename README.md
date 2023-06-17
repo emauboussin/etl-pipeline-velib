@@ -6,7 +6,7 @@ This project aims to display a map of Paris with all the bikes station of the Pa
 
 Since the data of these station are not updated all together, I've chosen to refresh the ETL DAG (AirFlow) every hour. 
 
-
+![Image of the dashboard](dashboard.png "Dashboard")
 
 ## How to use
 
