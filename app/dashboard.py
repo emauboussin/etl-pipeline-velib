@@ -9,7 +9,7 @@ import dash_bootstrap_components as dbc
 
 
 conn = psycopg2.connect(
-   database="velib", user='airflow', password='airflow', host='127.0.0.1', port= '5432'
+   database="velib", user='airflow', password='airflow', host='postgres', port= '5432'
 )
 #Creating a cursor object using the cursor() method
 cursor = conn.cursor()
@@ -74,7 +74,7 @@ app.layout = html.Div(children=[
             'font_family': 'cursive',
             'textAlign': 'center'
         }),
-    dcc.Graph(figure=fig,style={"height": "800px", "width": "100%"} )
+    dcc.Graph(figure=fig,style={"height": "1000px", "width": "100%"} )
 ])
 
 
@@ -94,4 +94,4 @@ def update_table():
     return current_time
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(host='0.0.0.0', port=8050, debug=True)

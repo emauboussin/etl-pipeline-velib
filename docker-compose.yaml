@@ -277,6 +277,18 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+  dash:
+    build:
+      context: .
+      dockerfile: Dockerfile.dash
+    container_name: dash_dash
+    command: python dashboard.py
+    volumes:
+      - .:/code
+    ports:
+      - 8050:8050
+    depends_on:
+      - postgres
 
 volumes:
   postgres-db-volume:
