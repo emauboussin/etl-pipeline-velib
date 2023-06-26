@@ -15,7 +15,7 @@ conn = psycopg2.connect(
 cursor = conn.cursor()
 
 #Executing an SQL request using the execute() method
-cursor.execute("select * from velib_station")
+cursor.execute("select * from velib_station_infos")
 
 # Fetch a single row using fetchone() method.
 data = cursor.fetchall()
@@ -23,7 +23,21 @@ data = cursor.fetchall()
 cols = []
 for elt in cursor.description:
     cols.append(elt[0])
-df = pd.DataFrame(data=data,columns=cols)
+dataframe_with_station_informations = pd.DataFrame(data=data,columns=cols)
+
+cursor.execute("select * from velib_station_status")
+
+data = cursor.fetchall()
+
+cols = []
+for elt in cursor.description:
+    cols.append(elt[0])
+dataframe_with_station_status = pd.DataFrame(data=data,columns=cols)
+
+
+
+#TO DO : merge les deux dataframes
+df = pd.merge(dataframe_with_station_status, dataframe_with_station_informations, on=["station_id","stationCode"])
 
 df["last_reported"] = pd.to_datetime(df['last_reported'],unit='s',utc=True)
 
