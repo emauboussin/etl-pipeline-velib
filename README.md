@@ -10,10 +10,11 @@ Since the data of these station are not updated all together, I've chosen to ref
 
 ## How to use
 
-All components of the application are containerized, and the only command to launch the application is : 
+All components of the application are containerized, and the only commands to launch the application is : 
 
 ```
-docker-compose up
+docker compose up airflow-init
+docker compose up
 ```
 
 You will need a docker engine to launch it.
