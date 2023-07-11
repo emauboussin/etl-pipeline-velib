@@ -25,8 +25,8 @@ def transform_dataframe_hourly(dict_core):
 
     #dataframe = pd.merge(dataframe_with_station_data, dataframe_with_station_informations, on=["station_id","stationCode"])
 
-    dataframe_with_station_data.drop(columns=["num_bikes_available","num_bikes_available_types","num_docks_available"],inplace=True)
-
+    dataframe_with_station_data.drop(columns=["station_id","num_bikes_available","num_bikes_available_types","num_docks_available"],inplace=True)
+    dataframe_with_station_data.columns = ["stationcode","numbikesavailable","numdocksavailable","is_installed","is_returning","is_renting","last_reported"]
     return dataframe_with_station_data
 
 def upload_data_hourly():
@@ -60,8 +60,8 @@ def get_data_daily():
 def transform_dataframe_daily(dict_info):
     stations_informations_json = dict_info['data']['stations']
     dataframe_with_station_informations = pd.json_normalize(stations_informations_json)
-    dataframe_with_station_informations.drop(columns=["rental_methods"],inplace=True)
-
+    dataframe_with_station_informations.drop(columns=["rental_methods","station_id"],inplace=True)
+    dataframe_with_station_informations.columns = ["name","lat","lon","capacity","stationcode"]
     return dataframe_with_station_informations
 
 def upload_data_daily():

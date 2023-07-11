@@ -18,7 +18,7 @@ default_args = {
 with DAG(
     dag_id="load_velib_daily",
     schedule_interval="@daily",
-    start_date=pendulum.datetime(2023,6,16),
+    start_date=pendulum.datetime(2023,7,10),
     catchup=False
 ) as dag :
     get_daily = PythonOperator(
