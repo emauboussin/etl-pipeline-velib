@@ -17,8 +17,8 @@ default_args = {
 }
 with DAG(
     dag_id="load_velib_hourly",
-    schedule_interval="@hourly",
-    start_date=pendulum.datetime(2023,6,16),
+    schedule_interval=timedelta(seconds=60),
+    start_date=pendulum.datetime(2023,7,10),
     catchup=False
 ) as dag :
     get_hourly = PythonOperator(
